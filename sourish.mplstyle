@@ -1,0 +1,23 @@
+# Font settings
+font.family : "Cascadia Code"
+
+# Background colors
+axes.facecolor : "#040227"
+figure.facecolor : "#040227"
+savefig.facecolor : "#040227"
+
+# Axis and tick colors
+axes.edgecolor : "#FFFFFF"
+ytick.color : "#FFFFFF"
+xtick.color : "#FFFFFF"
+
+# Label colors and styles
+axes.labelcolor : "#FFFFFF"
+figure.titlesize : 50
+figure.titleweight : bold
+axes.titleweight : bold
+axes.titlecolor : "#FFFFFF"
+
+# Line settings
+lines.linewidth : 5
+
