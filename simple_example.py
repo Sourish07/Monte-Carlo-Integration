@@ -4,7 +4,7 @@ from tqdm import trange
 
 from parallelize import parallelize
 
-NUM_OF_SAMPLES = 1_000_000_000
+NUM_OF_SAMPLES = 1_000_000
 
 def estimate_pi(idx, num_of_samples):
     half_circle = lambda x: math.sqrt(1-x**2)
