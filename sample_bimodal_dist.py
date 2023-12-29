@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 def bimodal_pdf(x):
     c = 1 / (2 * 0.704215)
@@ -11,23 +12,45 @@ def bimodal_pdf(x):
 
     return c * (-((j*x+k)+n) * ((j*x+k)-n) * ((j*x+k)+o) * ((j*x+k)-o)+l )
 
+bimodal_pdf_parallel = bimodal_pdf # Just for naming consistency since the function works with scalers and arrays
+
 f_left_bound = 0
 f_right_bound = 2
 interval_width = f_right_bound - f_left_bound
 # represents the height of our function in the range [0, 1]
-FUNCTION_MAX = np.max([bimodal_pdf(x) for x in np.arange(f_left_bound, f_right_bound, 0.0001)])
+FUNCTION_MAX = np.max(bimodal_pdf(np.arange(f_left_bound, f_right_bound, 0.0001)))
 
 def sample_binomal_dist():
+    # Keep on genrating samples until one is under the curve
     while True:
         x = np.random.random() * interval_width - f_left_bound
         y = np.random.random() * FUNCTION_MAX
         if y < bimodal_pdf(x):
             return x
+        
+def sample_binomal_dist_parallel(num_samples):
+    accepted_samples = None
+    while accepted_samples is None or len(accepted_samples) < num_samples:
+        x_samples = np.random.random(num_samples * 2) * interval_width - f_left_bound
+        y_samples = np.random.random(num_samples * 2) * FUNCTION_MAX
+        
+        new_accepted = x_samples[y_samples < bimodal_pdf(x_samples)]
+        if accepted_samples is None:
+            accepted_samples = new_accepted
+        else:
+            accepted_samples = np.concatenate((accepted_samples, new_accepted))
+    return accepted_samples[:num_samples]
+
 
 if __name__=="__main__":
-    NUM_OF_SAMPLES = 100_000
+    s = time.time()
+    NUM_OF_SAMPLES = 100_000_000
 
-    samples = [sample_binomal_dist() for _ in range(NUM_OF_SAMPLES)]
+    # samples = [sample_binomal_dist() for _ in range(NUM_OF_SAMPLES)]
+    print(time.time() - s)
+    s = time.time()
+    samples = sample_binomal_dist_parallel(NUM_OF_SAMPLES)
+    print(time.time() - s)
 
     plt.style.use('./sourish.mplstyle')
     plt.figure(figsize=(16, 9))
