@@ -12,7 +12,7 @@ def tent_pdf(x):
     else:
         return 0 # Outside of domain
     
-def tent_pdf_parallel(x):
+def tent_pdf_vec(x):
     equal_to_zero = x == 0
     # between_zero_and_one = (0 < x) & (x <= 1) # Don't need because we don't change the value
     between_one_and_two = (1 < x) & (x <= 2)
@@ -30,7 +30,7 @@ def inv_tent_cdf(x):
     else:
         return 2 - np.sqrt(2 - 2*x)
     
-def inv_tent_cdf_parallel(x):
+def inv_tent_cdf_vec(x):
     less_than_half = x < 0.5
     greater_than_half = ~less_than_half
 
@@ -42,8 +42,8 @@ def sample_tent_dist():
     # np.random.random() returns a random number between 0 and 1
     return inv_tent_cdf(np.random.random())
 
-def sample_tent_dist_parallel(num_samples):
-    return inv_tent_cdf_parallel(np.random.random(num_samples))
+def sample_tent_dist_vec(num_samples):
+    return inv_tent_cdf_vec(np.random.random(num_samples))
     
 if __name__=="__main__":
     s = time.time()
@@ -52,7 +52,7 @@ if __name__=="__main__":
     # samples = [sample_tent_dist() for _ in range(NUM_OF_SAMPLES)]
     print(time.time() - s)
     s = time.time()
-    samples = sample_tent_dist_parallel(NUM_OF_SAMPLES)
+    samples = sample_tent_dist_vec(NUM_OF_SAMPLES)
     print(time.time() - s)
 
     plt.style.use('./sourish.mplstyle')

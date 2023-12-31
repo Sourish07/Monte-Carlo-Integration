@@ -19,5 +19,5 @@ axes.titleweight : bold
 axes.titlecolor : "#FFFFFF"
 
 # Line settings
-lines.linewidth : 5
+lines.linewidth : 2
 

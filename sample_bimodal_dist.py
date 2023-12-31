@@ -3,16 +3,11 @@ import numpy as np
 import time
 
 def bimodal_pdf(x):
-    c = 1 / (2 * 0.704215)
-    j = 1.4
-    k = -1.4
-    n = 0.9
-    o = 1
-    l = 1.1
+    p, q, r, s, t, u = 0.7100104371534262, 1.4, -1.4, 0.9, 1, 1.1
+    a = q*x+r
+    return p * (-(a+s) * (a-s) * (a+t) * (a-t)+u )
 
-    return c * (-((j*x+k)+n) * ((j*x+k)-n) * ((j*x+k)+o) * ((j*x+k)-o)+l )
-
-bimodal_pdf_parallel = bimodal_pdf # Just for naming consistency since the function works with scalers and arrays
+bimodal_pdf_vec = bimodal_pdf # Just for naming consistency since the function works with scalers and arrays
 
 f_left_bound = 0
 f_right_bound = 2
@@ -28,7 +23,7 @@ def sample_binomal_dist():
         if y < bimodal_pdf(x):
             return x
         
-def sample_binomal_dist_parallel(num_samples):
+def sample_binomal_dist_vec(num_samples):
     accepted_samples = None
     while accepted_samples is None or len(accepted_samples) < num_samples:
         x_samples = np.random.random(num_samples * 2) * interval_width - f_left_bound
@@ -44,13 +39,9 @@ def sample_binomal_dist_parallel(num_samples):
 
 if __name__=="__main__":
     s = time.time()
-    NUM_OF_SAMPLES = 100_000_000
+    NUM_OF_SAMPLES = 10_000_000
 
-    # samples = [sample_binomal_dist() for _ in range(NUM_OF_SAMPLES)]
-    print(time.time() - s)
-    s = time.time()
-    samples = sample_binomal_dist_parallel(NUM_OF_SAMPLES)
-    print(time.time() - s)
+    samples = sample_binomal_dist_vec(NUM_OF_SAMPLES)
 
     plt.style.use('./sourish.mplstyle')
     plt.figure(figsize=(16, 9))
@@ -68,5 +59,4 @@ if __name__=="__main__":
     plt.gcf().subplots_adjust(bottom=0.15)
 
     plt.hist(samples, bins=250, color="#df3b43", density=True)
-    # plt.show()
     plt.savefig('rejection_method.png', dpi=240, pad_inches=0.5)
